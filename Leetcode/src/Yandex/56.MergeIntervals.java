@@ -1,27 +1,55 @@
 class Solution {
     public int[][] merge(int[][] intervals) {
-        List<int[]> list = new ArrayList<>();
-        Arrays.sort(intervals, (a, b) -> {
+        Arrays.sort(intervals, (a,b) -> {
             if(a[0] != b[0]){
                 return a[0] - b[0];
             }else{
                 return a[1] - b[1];
             }
         });
-        int prevStart = intervals[0][0];
-        int prevEnd = intervals[0][1];
-        for(int i = 1; i < intervals.length; i++){
-            int start = intervals[i][0];
-            int end = intervals[i][1];
-            if(start >= prevStart && start <= prevEnd){
-                prevEnd = Math.max(prevEnd, end);
+        List<int[]> list = new ArrayList<>();
+        for(int[] p : intervals){
+            if(list.isEmpty() || list.get(list.size() - 1)[1] < p[0]){
+                list.add(p);
             }else{
-                list.add(new int[]{prevStart, prevEnd});
-                prevStart = start;
-                prevEnd = end;
+                list.get(list.size() - 1)[1] = Math.max(list.get(list.size() - 1)[1],p[1]);
             }
         }
-        list.add(new int[]{prevStart, prevEnd});
         return list.toArray(new int[0][]);
+    }
+}
+
+
+class SolutionSort {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        List<Integer> list = new ArrayList<>();
+        for(int i : arr){
+            list.add(i);
+        }
+        list.sort((a,b) -> Math.abs(a - x) - Math.abs(b - x));
+        list = list.subList(0,k);
+        list.sort((a,b)->a-b);
+        return list;
+    }
+}
+
+
+class SolutionBinaryLeft {
+    public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        int left = 0;
+        int right = arr.length - k;
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            if(x - arr[mid] > arr[mid + k] - x){
+                left = mid + 1;
+            }else{
+                right = mid;
+            }
+        }
+        List<Integer> res = new ArrayList<>();
+        for(int i = left; i < left + k; i++){
+            res.add(arr[i]);
+        }
+        return res;
     }
 }
