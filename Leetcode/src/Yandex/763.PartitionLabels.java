@@ -1,30 +1,25 @@
 class Solution {
     public List<Integer> partitionLabels(String s) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        char arr[] = s.toCharArray();
+        HashMap<Character,Integer> map = new HashMap<>();
+        char[] arr = s.toCharArray();
         for(int i = 0; i < arr.length; i++){
             map.put(arr[i], i);
         }
-        int i = 0;
+
+        int left = 0;
         List<Integer> list = new ArrayList<>();
-        for(; i < arr.length; i++){
+        int maxIndex = -1;
+        for(int i = 0; i < arr.length; i++){
             char ch = arr[i];
-            int right = getRightLimit(arr, i, map);
-            list.add(right - i + 1);
-            i = right;
+            maxIndex = Math.max(maxIndex, map.get(ch));
+            if(i == maxIndex){
+                list.add(i - left + 1);
+                left = i + 1;
+                maxIndex = -1;
+                continue;
+            }
+
         }
         return list;
-    }
-
-
-    public int getRightLimit(char arr[], int index, HashMap<Character, Integer> map){
-        int targetIndex = map.get(arr[index]);
-        for(int i = index; i < arr.length; i++){
-            targetIndex = Math.max(targetIndex, map.get(arr[i]));
-            if(targetIndex == i){
-                return i;
-            }
-        }
-        return arr.length - 1;
     }
 }
